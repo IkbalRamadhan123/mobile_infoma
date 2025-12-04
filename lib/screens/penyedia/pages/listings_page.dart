@@ -256,13 +256,15 @@ class _CreateListingDialogState extends State<_CreateListingDialog> {
         latitude: _latitude,
         longitude: _longitude,
         location: _locationName,
+        // Use first image as the main image if available
+        image: _images.isNotEmpty ? _images.first : null,
       );
 
       final listingId = await widget.dbHelper.insertListing(listing);
 
-      // Save images if there are any
-      if (_images.isNotEmpty) {
-        await widget.dbHelper.saveListingImages(listingId, _images);
+      // Save additional images (starting from second image) if there are any
+      if (_images.length > 1) {
+        await widget.dbHelper.saveListingImages(listingId, _images.sublist(1));
       }
 
       if (mounted) {
